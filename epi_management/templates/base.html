@@ -39,9 +39,12 @@
         <a href="{% url 'emprestimos_lista' %}" class="item-link">Empréstimo</a>
         <a href="{% url 'emprestimos_criar' %}" class="item-action"><i class='bx bx-plus'></i></a>
       </div>
+      <div class="sidebar-item">
+        <a href="{% url 'relatorio_emprestimos' %}" class="item-link">Relatório</a>
+        <a href="{% url 'relatorio_emprestimos' %}" class="item-action"><i class='bx bx-file'></i></a>
+      </div>
     </div>
-
-    <main class="main-content">
+      <main class="main-content">
       {% block content %}
       {% endblock %}
     </main>

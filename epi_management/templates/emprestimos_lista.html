@@ -4,7 +4,6 @@
 <div class="main-container">
   <h1>Lista de Empréstimos</h1>
   
-  
   <table class="data-table">
     <thead>
       <tr>
@@ -14,6 +13,7 @@
         <th>Status</th>
         <th>Usuario</th>
         <th>Colaborador</th>
+        <th>Equipamento</th>
       </tr>
     </thead>
     <tbody>
@@ -25,6 +25,7 @@
         <td>{{ emprestimo.status.nome }}</td>
         <td>{{ emprestimo.usuario.nome }}</td>
         <td>{{ emprestimo.colaborador.nome }}</td>
+        <td>{{ emprestimo.equipamento.nome }}</td>
         <td class="table-actions">
           <a href="{% url 'emprestimos_editar' pk=emprestimo.pk %}" class="edit-btn">Editar</a>
           <a href="{% url 'emprestimos_excluir' pk=emprestimo.pk %}" class="delete-btn">Excluir</a>

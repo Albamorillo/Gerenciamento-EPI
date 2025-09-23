@@ -48,6 +48,7 @@ class NivelAcesso(models.Model):
         return self.nome
 
 class Colaborador(models.Model):
+    id = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=100)
     setor = models.CharField(max_length=50)
     funcao = models.CharField(max_length=50)
@@ -57,6 +58,7 @@ class Colaborador(models.Model):
         return self.nome
 
 class Equipamento(models.Model):
+    id = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=100)
     quantidade_disponivel = models.IntegerField()
     validade = models.DateField(null=True, blank=True)
@@ -103,6 +105,23 @@ class Emprestimo(models.Model):
     status = models.ForeignKey(StatusEmprestimo, on_delete=models.CASCADE)
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     colaborador = models.ForeignKey(Colaborador, on_delete=models.CASCADE)
+    equipamento = models.ForeignKey(Equipamento, on_delete=models.CASCADE)
+    
 
     def __str__(self):
         return f"Empréstimo para {self.colaborador}"
+    
+class RelatorioEmprestimo(models.Model):
+    colaborador = models.ForeignKey(Colaborador, on_delete=models.CASCADE)
+    total_emprestimos = models.PositiveIntegerField(default=0)
+    total_devolvidos = models.PositiveIntegerField(default=0)
+    total_pendentes = models.PositiveIntegerField(default=0)
+    ultimo_emprestimo = models.DateField(null=True, blank=True)
+    equipamento_mais_frequente = models.ForeignKey(Equipamento, on_delete=models.SET_NULL, null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Relatório de Empréstimo"
+        verbose_name_plural = "Relatórios de Empréstimos"
+
+    def __str__(self):
+        return f"Relatório de {self.colaborador.nome}"

@@ -26,7 +26,7 @@ class EquipamentoForm(forms.ModelForm):
 class UsuarioForm(forms.ModelForm):
     class Meta:
         model = Usuario
-        fields = '__all__'
+        fields = ['nome', 'email', 'nivel_acesso']
         widgets = {
             'nome': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.TextInput(attrs={'class': 'form-control'}),
@@ -43,10 +43,8 @@ class EmprestimoForm(forms.ModelForm):
             'status': forms.Select(attrs={'class': 'form-control'}),
             'usuario': forms.Select(attrs={'class': 'form-control'}),
             'colaborador': forms.Select(attrs={'class': 'form-control'}),
+            'equipamento': forms.Select(attrs={'class': ''}),
         }
-
-
-
 
 class LoginForm(forms.Form):
     email = forms.CharField(max_length=150)
@@ -74,3 +72,11 @@ class RegistroForm(forms.ModelForm):
             raise forms.ValidationError("As senhas não coincidem.")
         
         return cleaned_data
+    
+    class relatorioEmprestimoForm(forms.ModelForm):
+        class Meta:
+            model = Emprestimo
+            fields = ['colaborador']
+            widgets = {
+                'colaborador': forms.Select(attrs={'class': 'form-control'}),
+            }

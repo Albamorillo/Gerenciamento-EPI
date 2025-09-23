@@ -2,15 +2,24 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Colaborador, Equipamento, Usuario, Emprestimo, NivelAcesso
 from .forms import ColaboradorForm, EquipamentoForm, UsuarioForm, EmprestimoForm, LoginForm, RegistroForm
 from django.contrib.auth import authenticate, login
+from django.db.models import Q
+from django.contrib import messages
+from django.db.models import Count, Max
+
 
 def home(request):
     return render(request, 'base.html')
 
-
-
 def colaboradores_lista(request):
-    colaboradores = Colaborador.objects.all()
-    return render(request, 'colaboradores_lista.html', {'colaboradores': colaboradores})
+    query = request.GET.get('q')
+    if query:
+        colaboradores = Colaborador.objects.filter(Q(nome__icontains=query))
+    else:
+        colaboradores = Colaborador.objects.all()
+    return render(request, 'colaboradores_lista.html', {
+        'colaboradores': colaboradores,
+        'query': query
+    })
 
 def equipamentos_lista(request):
     equipamentos = Equipamento.objects.all()
@@ -29,7 +38,10 @@ def colaboradores_criar(request):
         form = ColaboradorForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('colaboradores_lista')
+            messages.success(request, 'Colaborador cadastrado com sucesso!')
+            return redirect('colaboradores_criar')
+        else:
+            messages.error(request, 'Erro ao cadastrar colaborador. Verifique os dados.')
     else:
         form = ColaboradorForm()
     return render(request, 'colaboradores_form.html', {'form': form})
@@ -39,7 +51,10 @@ def equipamentos_criar(request):
         form = EquipamentoForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('equipamentos_lista')
+            messages.success(request, 'Equipamento cadastrado com sucesso!')
+            return redirect('equipamentos_criar')
+        else:
+            messages.error(request, 'Erro ao cadastrar equipamento. Verifique os dados.')
     else:
         form = EquipamentoForm()
     return render(request, 'equipamentos_form.html', {'form': form})
@@ -75,6 +90,7 @@ def equipamentos_excluir(request, pk):
     equipamento = get_object_or_404(Equipamento, pk=pk)
     if request.method == 'POST':
         equipamento.delete()
+        messages.success(request, 'Equipamento excluído com sucesso!')
         return redirect('equipamentos_lista')
     return render(request, 'equipamentos_excluir.html', {'equipamento': equipamento})
 
@@ -109,7 +125,10 @@ def equipamentos_editar(request, pk):
         form = EquipamentoForm(request.POST, instance=equipamento)
         if form.is_valid():
             form.save()
-            return redirect('equipamentos_lista')
+            messages.success(request, 'Equipamento atualizado com sucesso!')
+            return redirect('equipamentos_editar', pk=pk)
+        else:
+            messages.error(request, 'Erro ao atualizar equipamento.')
     else:
         form = EquipamentoForm(instance=equipamento)
     return render(request, 'equipamentos_form.html', {'form': form})
@@ -172,3 +191,18 @@ def criar_conta_view(request):
     else:
         form = RegistroForm()
     return render(request, 'criar_conta.html', {'form': form})
+
+def relatorio_emprestimos(request):
+    relatorio = (
+        Emprestimo.objects
+        .values('colaborador__nome')
+        .annotate(
+            total=Count('id'),
+            devolvidos=Count('id', filter=Q(status__nome='devolvido')),
+            pendentes=Count('id', filter=Q(status__nome='pendente')),
+            ultimo=Max('data_emprestimo')
+        )
+        .order_by('-total')
+    )
+
+    return render(request, 'relatorio_emprestimos.html', {'relatorio': relatorio})

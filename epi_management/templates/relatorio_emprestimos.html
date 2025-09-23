@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="main-container">
+    <h1>📊 Relatório de Empréstimos por Colaborador</h1>
+    <table class="data-table table table-bordered table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>Colaborador</th>
+                <th>Total</th>
+                <th>Devolvidos</th>
+                <th>Pendentes</th>
+                <th>Último Empréstimo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in relatorio %}
+            <tr>
+                <td>{{ item.colaborador__nome }}</td>
+                <td>{{ item.total }}</td>
+                <td>{{ item.devolvidos }}</td>
+                <td>{{ item.pendentes }}</td>
+                <td>{{ item.ultimo|date:"d/m/Y" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center">Nenhum dado encontrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

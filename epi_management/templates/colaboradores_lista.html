@@ -4,6 +4,11 @@
 <div class="main-container">
   <h1 class="page-title">Lista de Colaboradores</h1>
   
+  <form method="get" action="{% url 'colaboradores_lista' %}">
+  <input type="text" name="q" placeholder="Pesquisar por nome" value="{{ query }}">
+  <button type="submit">🔍 Buscar</button>
+</form>
+
   <table class="data-table">
     <thead>
       <tr>

@@ -23,4 +23,5 @@ urlpatterns = [
     path('emprestimos/<int:pk>/editar/', views.emprestimos_editar, name='emprestimos_editar'),
     path('entrar/', views.entrar_view, name='entrar'),
     path('criar-conta/', views.criar_conta_view, name='criar_conta'),
+    path('relatorio/', views.relatorio_emprestimos, name='relatorio_emprestimos'),
 ]
