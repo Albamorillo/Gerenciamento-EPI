@@ -3,24 +3,33 @@
 {% block content %}
 <div class="main-container">
     <h1>📊 Relatório de Empréstimos por Colaborador</h1>
+
+    <!-- Campo de busca por nome do colaborador -->
+    <form method="get" class="mb-3">
+        <div class="input-group">
+            <input type="text" name="q" class="form-control" placeholder="Buscar colaborador..." value="{{ request.GET.q }}">
+            <button type="submit" class="btn btn-primary">Buscar</button>
+        </div>
+    </form>
+
     <table class="data-table table table-bordered table-hover">
         <thead class="table-light">
             <tr>
                 <th>Colaborador</th>
-                <th>Total</th>
-                <th>Devolvidos</th>
-                <th>Pendentes</th>
-                <th>Último Empréstimo</th>
+                <th>Equipamento</th>
+                <th>Data Empréstimo</th>
+                <th>Data Devolução</th>
+                <th>Status</th>
             </tr>
         </thead>
         <tbody>
-            {% for item in relatorio %}
+            {% for emprestimo in emprestimos %}
             <tr>
-                <td>{{ item.colaborador__nome }}</td>
-                <td>{{ item.total }}</td>
-                <td>{{ item.devolvidos }}</td>
-                <td>{{ item.pendentes }}</td>
-                <td>{{ item.ultimo|date:"d/m/Y" }}</td>
+                <td>{{ emprestimo.colaborador.nome }}</td>
+                <td>{{ emprestimo.equipamento.nome }}</td>
+                <td>{{ emprestimo.data_emprestimo|date:"d/m/Y" }}</td>
+                <td>{{ emprestimo.data_devolucao|date:"d/m/Y" }}</td>
+                <td>{{ emprestimo.status.nome }}</td>
             </tr>
             {% empty %}
             <tr>

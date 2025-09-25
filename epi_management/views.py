@@ -193,8 +193,13 @@ def criar_conta_view(request):
     return render(request, 'criar_conta.html', {'form': form})
 
 def relatorio_emprestimos(request):
+    q = request.GET.get('q', '')
     relatorio = (
         Emprestimo.objects
+        .filter(colaborador__nome__icontains=q) if q else Emprestimo.objects.all()
+    )
+    relatorio = (
+        relatorio
         .values('colaborador__nome')
         .annotate(
             total=Count('id'),
@@ -204,5 +209,4 @@ def relatorio_emprestimos(request):
         )
         .order_by('-total')
     )
-
-    return render(request, 'relatorio_emprestimos.html', {'relatorio': relatorio})
+    return render(request, 'relatorio_emprestimos.html', {'emprestimos': relatorio, 'q': q})
